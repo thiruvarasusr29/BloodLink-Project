@@ -1,4 +1,4 @@
-package com.example.BloodLink;
+package com.example.bloodlink;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

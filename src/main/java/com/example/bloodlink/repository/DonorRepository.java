@@ -12,4 +12,9 @@ public interface DonorRepository extends JpaRepository<Donor, Long> {
             BloodGroup bloodGroup,
             String city
     );
+
+    List<Donor> findByBloodGroupAndCityIgnoreCaseAndAvailableTrue(
+            BloodGroup bloodGroup,
+            String city
+    );
 }

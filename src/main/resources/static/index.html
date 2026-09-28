@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloodLink - Blood Donor Management System</title>
+    <meta name="description" content="BloodLink is a comprehensive blood donor management platform for tracking donors, checking 90-day eligibility, and managing donation records.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="toast-container" class="toast-container"></div>
+
+    <header class="navbar">
+        <div class="container nav-container">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <h1>BloodLink</h1>
+                    <p>Blood Donor Management System</p>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <button class="nav-btn active" data-tab="search-tab" id="nav-search-btn">Find Donors</button>
+                <button class="nav-btn" data-tab="register-tab" id="nav-register-btn">Register Donor</button>
+                <button class="nav-btn" data-tab="donate-tab" id="nav-donate-btn">Record Donation</button>
+                <button class="nav-btn" data-tab="history-tab" id="nav-history-btn">History & Donors</button>
+                <button class="nav-btn" data-tab="groups-tab" id="nav-groups-btn">Blood Groups</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        <!-- Metric Summary Cards -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span class="stat-label">Total Donors</span>
+                    <span class="stat-value" id="stat-total-donors">0</span>
+                </div>
+                <div class="stat-icon icon-blue">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span class="stat-label">Active & Available</span>
+                    <span class="stat-value" id="stat-available-donors">0</span>
+                </div>
+                <div class="stat-icon icon-green">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span class="stat-label">Blood Groups</span>
+                    <span class="stat-value" id="stat-blood-groups">0</span>
+                </div>
+                <div class="stat-icon icon-red">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span class="stat-label">Donation Records</span>
+                    <span class="stat-value" id="stat-total-donations">0</span>
+                </div>
+                <div class="stat-icon icon-purple">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 1: Search Donors Section -->
+        <section id="search-tab" class="tab-panel active">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Search Eligible Donors</h2>
+                    <p class="subtitle">Find active donors matching blood group and city who meet the 90-day eligibility criteria.</p>
+                </div>
+                <div class="card-body">
+                    <form id="search-donor-form" class="search-form-grid">
+                        <div class="form-group">
+                            <label for="search-blood-group">Blood Group <span class="required">*</span></label>
+                            <select id="search-blood-group" required class="form-control">
+                                <option value="">-- Select Blood Group --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="search-city">City <span class="required">*</span></label>
+                            <input type="text" id="search-city" placeholder="e.g. Chennai, Coimbatore, Madurai" required class="form-control">
+                        </div>
+                        <div class="form-group form-actions-inline">
+                            <button type="submit" class="btn btn-primary" id="btn-search-donors">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                Search Donors
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="btn-reset-search">Reset</button>
+                        </div>
+                    </form>
+
+                    <div class="results-section">
+                        <div class="results-header">
+                            <h3>Search Results</h3>
+                            <span class="badge badge-info" id="search-count-badge">0 Found</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table" id="search-results-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Phone</th>
+                                        <th>City</th>
+                                        <th>Blood Group</th>
+                                        <th>Availability</th>
+                                        <th>Last Donation Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="search-results-tbody">
+                                    <tr class="empty-row">
+                                        <td colspan="7">Select blood group and city, then click Search Donors.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: Register Donor Section -->
+        <section id="register-tab" class="tab-panel">
+            <div class="card max-w-700">
+                <div class="card-header">
+                    <h2>Register New Blood Donor</h2>
+                    <p class="subtitle">Enroll a voluntary donor into the BloodLink database.</p>
+                </div>
+                <div class="card-body">
+                    <form id="register-donor-form" class="standard-form">
+                        <div class="form-group">
+                            <label for="donor-name">Full Name <span class="required">*</span></label>
+                            <input type="text" id="donor-name" placeholder="e.g. Rahul Sharma" required class="form-control">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label for="donor-phone">Phone Number <span class="required">*</span></label>
+                                <input type="tel" id="donor-phone" placeholder="e.g. 9876543210" required class="form-control">
+                            </div>
+                            <div class="form-group col">
+                                <label for="donor-city">City <span class="required">*</span></label>
+                                <input type="text" id="donor-city" placeholder="e.g. Chennai" required class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="donor-blood-group">Blood Group <span class="required">*</span></label>
+                            <select id="donor-blood-group" required class="form-control">
+                                <option value="">-- Select Blood Group --</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="btn-register-donor">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+                                Register Donor
+                            </button>
+                            <button type="reset" class="btn btn-secondary">Clear Form</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: Record Donation Section -->
+        <section id="donate-tab" class="tab-panel">
+            <div class="card max-w-700">
+                <div class="card-header">
+                    <h2>Record a Blood Donation</h2>
+                    <p class="subtitle">Log a blood donation event. Updates donor last donation date and marks donor as unavailable.</p>
+                </div>
+                <div class="card-body">
+                    <form id="record-donation-form" class="standard-form">
+                        <div class="form-group">
+                            <label for="donation-donor-select">Select Donor <span class="required">*</span></label>
+                            <select id="donation-donor-select" required class="form-control">
+                                <option value="">-- Choose Registered Donor --</option>
+                            </select>
+                            <small class="form-hint">Only registered donors can be selected.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="donation-date">Donation Date <span class="required">*</span></label>
+                            <input type="date" id="donation-date" required class="form-control">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="btn-record-donation">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                                Record Donation
+                            </button>
+                            <button type="reset" class="btn btn-secondary">Clear</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: History & All Donors Section -->
+        <section id="history-tab" class="tab-panel">
+            <div class="grid-2-col">
+                <div class="card">
+                    <div class="card-header flex-between">
+                        <div>
+                            <h2>Donation History</h2>
+                            <p class="subtitle">Complete audit trail of all recorded blood donations.</p>
+                        </div>
+                        <button class="btn btn-sm btn-secondary" id="btn-refresh-history">Refresh</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table" id="donation-history-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Donor Name</th>
+                                        <th>Blood Group</th>
+                                        <th>Donation Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="donation-history-tbody">
+                                    <tr class="empty-row"><td colspan="4">Loading history...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header flex-between">
+                        <div>
+                            <h2>All Registered Donors</h2>
+                            <p class="subtitle">Full list of all donors in the system.</p>
+                        </div>
+                        <button class="btn btn-sm btn-secondary" id="btn-refresh-donors">Refresh</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table" id="all-donors-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Blood Group</th>
+                                        <th>City</th>
+                                        <th>Status</th>
+                                        <th>Last Donated</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="all-donors-tbody">
+                                    <tr class="empty-row"><td colspan="6">Loading donors...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: Blood Groups Section -->
+        <section id="groups-tab" class="tab-panel">
+            <div class="card max-w-700">
+                <div class="card-header">
+                    <h2>Manage Blood Groups</h2>
+                    <p class="subtitle">View and add supported blood groups in the system.</p>
+                </div>
+                <div class="card-body">
+                    <form id="add-blood-group-form" class="inline-form">
+                        <div class="form-group flex-1">
+                            <label for="new-blood-group-name">New Blood Group Name <span class="required">*</span></label>
+                            <input type="text" id="new-blood-group-name" placeholder="e.g. Bombay Blood Group / AB+" required class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="btn-add-blood-group">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            Add Blood Group
+                        </button>
+                    </form>
+
+                    <div class="blood-groups-display">
+                        <h3>Available Blood Groups</h3>
+                        <div class="blood-groups-grid" id="blood-groups-container">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Quick Donation Modal -->
+    <div id="quick-donate-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Record Donation for <span id="modal-donor-name"></span></h3>
+                <button type="button" class="modal-close-btn" id="modal-close-btn">&times;</button>
+            </div>
+            <form id="quick-donation-form">
+                <input type="hidden" id="modal-donor-id">
+                <div class="form-group">
+                    <label>Donor Details</label>
+                    <div id="modal-donor-details" class="donor-details-preview"></div>
+                </div>
+                <div class="form-group">
+                    <label for="modal-donation-date">Donation Date <span class="required">*</span></label>
+                    <input type="date" id="modal-donation-date" required class="form-control">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="modal-submit-btn">Save Donation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; 2026 BloodLink &bull; Blood Donor Management System</p>
+            <p class="tech-stack-tag">Spring Boot + JPA + MySQL + REST</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

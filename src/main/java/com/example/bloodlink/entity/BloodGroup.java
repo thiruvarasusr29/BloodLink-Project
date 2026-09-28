@@ -1,6 +1,7 @@
 package com.example.bloodlink.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "blood_groups")
@@ -10,6 +11,7 @@ public class BloodGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Blood group name is required")
     @Column(nullable = false, unique = true)
     private String groupName;
 

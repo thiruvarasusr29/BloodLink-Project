@@ -2,6 +2,8 @@ package com.example.bloodlink.controller;
 
 import com.example.bloodlink.entity.DonationRecord;
 import com.example.bloodlink.service.DonationRecordService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,10 +24,10 @@ public class DonationRecordController {
     // Record a donation
     @PostMapping
     public ResponseEntity<DonationRecord> recordDonation(
-            @RequestBody DonationRecord donationRecord) {
+            @Valid @RequestBody DonationRecord donationRecord) {
 
-        return ResponseEntity.ok(
-                donationRecordService.recordDonation(donationRecord));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(donationRecordService.recordDonation(donationRecord));
     }
 
     // Get all donation records

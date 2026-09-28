@@ -2,6 +2,8 @@ package com.example.bloodlink.service;
 
 import com.example.bloodlink.entity.DonationRecord;
 import com.example.bloodlink.entity.Donor;
+import com.example.bloodlink.exception.BadRequestException;
+import com.example.bloodlink.exception.ResourceNotFoundException;
 import com.example.bloodlink.repository.DonationRecordRepository;
 import com.example.bloodlink.repository.DonorRepository;
 import org.springframework.stereotype.Service;
@@ -25,8 +27,13 @@ public class DonationRecordService {
 
     // Record a new donation
     public DonationRecord recordDonation(DonationRecord donationRecord) {
+        if (donationRecord == null || donationRecord.getDonor() == null || donationRecord.getDonor().getId() == null) {
+            throw new BadRequestException("Donor ID is required to record a donation");
+        }
 
-        Donor donor = donationRecord.getDonor();
+        Long donorId = donationRecord.getDonor().getId();
+        Donor donor = donorRepository.findById(donorId)
+                .orElseThrow(() -> new ResourceNotFoundException("Donor not found with id: " + donorId));
 
         LocalDate donationDate = donationRecord.getDonationDate();
 
@@ -34,6 +41,8 @@ public class DonationRecordService {
         if (donationDate == null) {
             donationDate = LocalDate.now();
             donationRecord.setDonationDate(donationDate);
+        } else if (donationDate.isAfter(LocalDate.now())) {
+            throw new BadRequestException("Donation date cannot be in the future");
         }
 
         // Update donor information
@@ -44,6 +53,9 @@ public class DonationRecordService {
 
         // Save updated donor
         donorRepository.save(donor);
+
+        // Attach managed donor to donation record
+        donationRecord.setDonor(donor);
 
         // Save donation record
         return donationRecordRepository.save(donationRecord);

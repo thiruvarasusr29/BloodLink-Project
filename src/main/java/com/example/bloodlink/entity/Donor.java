@@ -1,6 +1,8 @@
 package com.example.bloodlink.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
@@ -11,15 +13,19 @@ public class Donor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Donor name is required")
     @Column(nullable = false)
     private String name;
 
+    @NotBlank(message = "Phone number is required")
     @Column(nullable = false)
     private String phone;
 
+    @NotBlank(message = "City is required")
     @Column(nullable = false)
     private String city;
 
+    @NotNull(message = "Blood group is required")
     @ManyToOne
     @JoinColumn(name = "blood_group_id", nullable = false)
     private BloodGroup bloodGroup;
@@ -30,6 +36,14 @@ public class Donor {
     private boolean available = true;
 
     public Donor() {
+    }
+
+    public Donor(String name, String phone, String city, BloodGroup bloodGroup) {
+        this.name = name;
+        this.phone = phone;
+        this.city = city;
+        this.bloodGroup = bloodGroup;
+        this.available = true;
     }
 
     public Long getId() {

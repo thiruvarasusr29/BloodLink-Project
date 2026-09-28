@@ -1,6 +1,8 @@
 package com.example.bloodlink.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
 
 @Entity
@@ -11,14 +13,21 @@ public class DonationRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @PastOrPresent(message = "Donation date cannot be in the future")
     @Column(nullable = false)
     private LocalDate donationDate;
 
+    @NotNull(message = "Donor is required")
     @ManyToOne
     @JoinColumn(name = "donor_id", nullable = false)
     private Donor donor;
 
     public DonationRecord() {
+    }
+
+    public DonationRecord(LocalDate donationDate, Donor donor) {
+        this.donationDate = donationDate;
+        this.donor = donor;
     }
 
     public Long getId() {
