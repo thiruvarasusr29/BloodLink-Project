@@ -1,0 +1,26 @@
+services:
+  # BloodLink Web Service deployed via Docker on Render
+  - type: web
+    name: bloodlink-app
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: main
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 8080
+      # Configure external MySQL Database credentials (e.g. Aiven, PlanetScale, Clever Cloud, AWS RDS)
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
+      - key: JAVA_OPTS
+        value: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"

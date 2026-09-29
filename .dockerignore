@@ -1,0 +1,42 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Build artifacts & dependencies
+target/
+build/
+*.class
+*.jar
+*.war
+
+# Maven Wrapper & cache (if using maven image in multi-stage build)
+.mvn/
+mvnw
+mvnw.cmd
+
+# IDE and Editor configs
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+*.sublime-*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation & deployment configs
+*.md
+render.yaml
+Dockerfile*
+docker-compose*.yml
+.env
+.env.*
+
+# Logs
+*.log
